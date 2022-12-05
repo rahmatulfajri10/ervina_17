@@ -58,10 +58,11 @@ const login = async (req, res, next) => {
                         process.env.SECRET
                     );
                     //11. kembalikan nilai id, email, dan username
-                    res.cookie('JWT', token,{httpOnly: true, sameSite:"strict"}).status(200).json({
+                    res.cookie('JWT', token,{httpOnly: true, sameSite:"strict"}).status(200).send({
                         id: user[0].id,
                         username: user[0].username,
                         email: user[0].email,
+                        token:token,
                         message: "Login Succeedd"
                     });
                 }
@@ -107,9 +108,10 @@ const logout = async (req, res, next) => {
 const verify = async (req, res, next) => {
     try {
         // 13. membuat verify
-        const{email}=req.body;
+        // const{email}=req.body;
+        const email= req.verified.email;
         const user= await db.query(`SELECT * FROM unhan_modul_17 WHERE email= $1;`, [email])
-        return res.status(200).json({
+        return res.status(200).send({
             id: user.rows[0].id,
             username: user.rows[0].username,
             email: user.rows[0].email,
